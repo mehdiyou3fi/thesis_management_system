@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "Dr. Hamed Mirzaei",
+    "username": "hmirzaei",
+    "password_hash": "...",
+    "fields": ["Artificial Intelligence", "Data Mining", "Machine Learning"],
+    "guidance_capacity": 5,
+    "review_capacity": 10
+  }
+]
