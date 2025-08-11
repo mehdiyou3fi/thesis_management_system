@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Mahdi Hosseini",
     "username": "mahdi01",
-    "password_hash": "...",
+    "password": "...",
     "status": "active",
     "department": "Computer Engineering"
   }

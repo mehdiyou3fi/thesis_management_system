@@ -1,7 +1,7 @@
 import json
 import os 
 
-class DataMsnsger:
+class DataManager:
 
     @staticmethod
     def read_json (file_path):
@@ -19,6 +19,7 @@ class DataMsnsger:
                 return json.load(file)
             except json.JSONDecodeError:
                 return []
+    # نوشتن تابعی برای نوشتن در فایل جیسون 
     # def write_json(file_path, data):
     #     with open (filr)
     
