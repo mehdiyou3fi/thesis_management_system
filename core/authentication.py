@@ -19,4 +19,4 @@ class Authentication():
         for p  in DataManager.read_json(professor_file):
             if p["username"] == username and p["password"] == password:
                 return Professor(p["id"],p["name"], p["username"], p["password"])
-            return None 
+        return None 

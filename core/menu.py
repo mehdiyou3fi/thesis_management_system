@@ -1,4 +1,5 @@
 from .student_action import submit_thesis_request
+from .professor_action import review_thesis_requests
 def student_menu(student):
     while(True):
         print ("\n---Student Menu")
@@ -39,6 +40,8 @@ def advisor_menu(professor):
         choice = int(input("Please select "))
         if choice == 0:
             break
+        if choice == 1:
+            review_thesis_requests(professor)
 
 def Reviewer_menu(professor):
     while(True):
@@ -47,3 +50,4 @@ def Reviewer_menu(professor):
         choice = int(input("Please select "))
         if choice == 0:
             break
+        

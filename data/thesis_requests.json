@@ -6,7 +6,8 @@
         "course_id": 1,
         "course_title": "English Final Project",
         "professor_name": "Dr. Smith",
-        "status": "pending"
+        "professor_id": 2,
+        "status": "approved"
     },
     {
         "request_date": "2025-08-13 23:09:31",
@@ -15,6 +16,17 @@
         "course_id": 2,
         "course_title": "Advanced English Project",
         "professor_name": "Dr. Johnson",
-        "status": "pending"
+        "professor_id": 3,
+        "status": "rejected"
+    },
+    {
+        "request_date": "2025-08-14 00:18:11",
+        "student_id": 4,
+        "student_name": "mahdi",
+        "course_id": 2,
+        "course_title": "Advanced English Project",
+        "professor_name": "Dr. Johnson",
+        "professor_id": 3,
+        "status": "rejected"
     }
 ]

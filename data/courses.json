@@ -3,9 +3,10 @@
         "id": 1,
         "title": "English Final Project",
         "professor": "Dr. Smith",
+        "professor_id": 2,
         "year": 1404,
         "semester": "First Semester",
-        "capacity": 4,
+        "capacity": 3,
         "resources": [
             "English Grammar Book",
             "Academic Writing Guide"
@@ -17,6 +18,7 @@
         "id": 2,
         "title": "Advanced English Project",
         "professor": "Dr. Johnson",
+        "professor_id": 3,
         "year": 1404,
         "semester": "Second Semester",
         "capacity": 1,
