@@ -1,6 +1,6 @@
-from core.models.authentication import Authentication
-from core.models.menu import student_menu
-from core.models.menu import professor_menu
+from core.authentication import Authentication
+from core.menu import student_menu
+from core.menu import professor_menu
 if __name__ =="__main__":
     print ("Welcome to the Thesis Management System\n")
     role = input("what is your role (student or professor):")

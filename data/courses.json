@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "title": "English Final Project",
+        "professor": "Dr. Smith",
+        "year": 1404,
+        "semester": "First Semester",
+        "capacity": 4,
+        "resources": [
+            "English Grammar Book",
+            "Academic Writing Guide"
+        ],
+        "sessions": 10,
+        "units": 2
+    },
+    {
+        "id": 2,
+        "title": "Advanced English Project",
+        "professor": "Dr. Johnson",
+        "year": 1404,
+        "semester": "Second Semester",
+        "capacity": 1,
+        "resources": [
+            "Advanced English Textbook",
+            "Essay Writing Techniques"
+        ],
+        "sessions": 12,
+        "units": 2
+    }
+]

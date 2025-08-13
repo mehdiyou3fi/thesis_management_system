@@ -1,3 +1,4 @@
+from .student_action import submit_thesis_request
 def student_menu(student):
     while(True):
         print ("\n---Student Menu")
@@ -10,6 +11,10 @@ def student_menu(student):
         choice = int(input("Please select "))
         if choice == 0:
             break
+        if choice == 1:
+            submit_thesis_request(student)
+            
+
 
 
 def professor_menu(professor):

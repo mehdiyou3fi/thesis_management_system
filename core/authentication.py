@@ -1,6 +1,7 @@
 import os 
 from utils.data_manager import DataManager
-from .student import Student
+from core.models.student import Student
+from core.models.professor import Professor
 
 class Authentication():
     @staticmethod
@@ -14,8 +15,8 @@ class Authentication():
         return None
     @staticmethod
     def professor_login(username, password):
-        proffessor_file = os.path.join("data", "professor.json")
-        for p  in DataManager.read_json(proffessor_file):
+        professor_file = os.path.join("data", "professor.json")
+        for p  in DataManager.read_json(professor_file):
             if p["username"] == username and p["password"] == password:
-                return Student(p["id"],p["name"], p["username"], p["password"])
+                return Professor(p["id"],p["name"], p["username"], p["password"])
             return None 
