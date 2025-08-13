@@ -12,3 +12,10 @@ class Authentication():
             if s["username"] == username and s["password"] == password:
                 return Student(s["id"],s["name"], s["username"], s["password"])
         return None
+    @staticmethod
+    def professor_login(username, password):
+        proffessor_file = os.path.join("data", "professor.json")
+        for p  in DataManager.read_json(proffessor_file):
+            if p["username"] == username and p["password"] == password:
+                return Student(p["id"],p["name"], p["username"], p["password"])
+            return None 
