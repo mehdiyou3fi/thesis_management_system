@@ -7,7 +7,8 @@
         "course_title": "English Final Project",
         "professor_name": "Dr. Smith",
         "professor_id": 2,
-        "status": "approved"
+        "status": "approved",
+        "approval_date": "202-05-01 10:00:00"
     },
     {
         "request_date": "2025-08-13 23:09:31",
@@ -17,7 +18,8 @@
         "course_title": "Advanced English Project",
         "professor_name": "Dr. Johnson",
         "professor_id": 3,
-        "status": "rejected"
+        "status": "rejected",
+        "rejection_date": "2025-08-15 01:27:49"
     },
     {
         "request_date": "2025-08-14 00:18:11",
@@ -27,6 +29,7 @@
         "course_title": "Advanced English Project",
         "professor_name": "Dr. Johnson",
         "professor_id": 3,
-        "status": "rejected"
+        "status": "approved",
+        "approval_date": "2025-08-15 01:23:41"
     }
 ]

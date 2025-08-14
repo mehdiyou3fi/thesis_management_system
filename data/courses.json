@@ -6,7 +6,7 @@
         "professor_id": 2,
         "year": 1404,
         "semester": "First Semester",
-        "capacity": 3,
+        "capacity": 2,
         "resources": [
             "English Grammar Book",
             "Academic Writing Guide"
@@ -21,7 +21,7 @@
         "professor_id": 3,
         "year": 1404,
         "semester": "Second Semester",
-        "capacity": 1,
+        "capacity": 0,
         "resources": [
             "Advanced English Textbook",
             "Essay Writing Techniques"

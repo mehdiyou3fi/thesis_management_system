@@ -1,5 +1,6 @@
 import os
 from utils.data_manager import DataManager
+from datetime import datetime
 def review_thesis_requests(professor):
     request_file = os.path.join("data", "thesis_requests.json")
     course_file = os.path.join("data", "courses.json")
@@ -50,16 +51,19 @@ def review_thesis_requests(professor):
     if relate_course and relate_course["capacity"]<=0:
         print("No capacity left for this course! Cannot approve.")
         select_request["status"] = "rejected"
+        select_request["rejection_date"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # چک کردن ظرفیت خود استاد 
     elif relate_professor and relate_professor["guidance_capacity"]<=0:
         print(f"No guidance capacity left for Professor {relate_professor['name']}! Cannot approve.")
         select_request["status"] = "rejected"
+        select_request["rejection_date"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     else:
         decision = input("Approve (a) or Reject (r)? ").lower()
         if decision in ['a', 'approve']:
             select_request["status"] = "approved"
+            select_request["approval_date"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if relate_course:
                 relate_course["capacity"] -= 1
             if relate_professor:
@@ -67,6 +71,7 @@ def review_thesis_requests(professor):
             print ("Request approved.")
         elif decision in ['r','reject']:
             select_request["status"] = "rejected"
+            select_request["rejection_date"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print ("request rejected ")
         else:
             print ("Invalid choice! ")

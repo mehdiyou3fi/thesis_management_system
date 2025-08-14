@@ -3,7 +3,7 @@ from core.menu import student_menu
 from core.menu import professor_menu
 if __name__ =="__main__":
     print ("Welcome to the Thesis Management System\n")
-    role = input("what is your role (student(s) or professor(a)):")
+    role = input("what is your role (student(s) or professor(p)):")
     username = input("username: ")
     password = input("password: ")
     # check login student 

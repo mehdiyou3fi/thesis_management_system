@@ -1,6 +1,7 @@
 import os
 from utils.data_manager import DataManager
-from datetime import datetime
+from datetime import datetime , timedelta
+from .models.student import Student
 
 def submit_thesis_request(student) :
     professor_file = os.path.join("data", "professor.json")
@@ -58,14 +59,70 @@ def submit_thesis_request(student) :
     # دخیره در فایل درخواست ها
     DataManager.append_json(request_file, new_request)
 
-    # چون درس هنوز قبول نشده باهاش پس ظرفیت ها تغییری نمیکند
-    # # کاهش ظرفیت 
-    # for c in courses:
-    #     if c["id"] == selected_course["id"]:
-    #         c["capacity"] -=1
-    #         break
-    # DataManager.write_json(courses_file, courses)
-
     print ("Thesis request submitted successfully ")
+
+def submit_defense_request(student):
+    thesis_requests_file = os.path.join("data", "thesis_requests.json")
+    defense_requests_file = os.path.join("data", "thesis_defense_requests.json")
+
+    thesis_requests = DataManager.read_json(thesis_requests_file)
+
+    # پیدا کردن دانشجو و در خواست های تایید شده ان 
+    approved_theses = [t for t in thesis_requests if t["student_id"]==student.id and t["status"]=="approved"]
+
+    if not approved_theses :
+        print ("you have no approved thesis to defiend")
+        return 
+    
+
+    # چک گذشتن سه ماه از درخواست پایان نامه 
+    now_date = datetime.now()
+    eligible_theses = []
+    for thesis in approved_theses:
+        approval_date = datetime.strptime(thesis["approval_date"], "%Y-%m-%d %H:%M:%S")
+        if now_date - approval_date>= timedelta(days=90):
+            eligible_theses.append(thesis)
+
+    if not eligible_theses:
+        print ("You most wait at least 3 month after approval before defending ")
+        return 
+    
+    # نمایش پایان نامه های قابل دفاع
+    for i, thesis in enumerate(eligible_theses,start=1):
+        print (f"{i}. {thesis['course_title']}  Approved on : {thesis['approval_date']}")
+
+        choice = input("Select thesis to request defense: ")
+
+        try:
+            choice = int (choice) -1 
+            selected_thesis = eligible_theses[choice]
+        except (ValueError, IndexError):
+            print ("Invalid selection")
+            return
+        
+
+        # ایجاد درخواست فاع 
+        new_defense_request = {
+        
+        "student_id": student.id,
+        "student_name": student.name,
+        "course_id": selected_thesis["course_id"],
+        "course_title": selected_thesis["course_title"],
+        "professor_name":selected_thesis["professor_name"],
+        "professor_id": selected_thesis["professor_id"],
+        "status": "pending",
+        "request_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    
+
+    # ثبت 
+    DataManager.append_json(defense_requests_file, new_defense_request)
+    print ("Defense request submitted successfully!")
+        
+
+
+
+    
+
 
         
