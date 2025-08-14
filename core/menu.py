@@ -1,6 +1,5 @@
-from .student_action import submit_thesis_request
+from .student_action import *
 from .professor_action import review_thesis_requests
-from .student_action import submit_defense_request
 def student_menu(student):
     while(True):
         print ("\n---Student Menu")
@@ -15,6 +14,8 @@ def student_menu(student):
             break
         if choice == 1:
             submit_thesis_request(student)
+        if choice == 2:
+            view_request_status(student)
         if choice == 4:
             submit_defense_request(student)
             

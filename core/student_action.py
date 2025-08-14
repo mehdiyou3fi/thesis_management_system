@@ -118,6 +118,20 @@ def submit_defense_request(student):
     # ثبت 
     DataManager.append_json(defense_requests_file, new_defense_request)
     print ("Defense request submitted successfully!")
+
+def view_request_status(student):
+    thesis_requests_file = os.path.join("data", "thesis_requests.json")
+    thesis_requests = DataManager.read_json(thesis_requests_file)
+    list_requests =[t for t in thesis_requests if t["student_id"]==student.id]
+    if not list_requests :
+        print("No request has been registered for you.")
+        return
+    for i,status in enumerate(list_requests, start=1):
+        print (f"{i}. course: {status['course_title']} - status: {status["status"]}")
+        
+
+
+
         
 
 
