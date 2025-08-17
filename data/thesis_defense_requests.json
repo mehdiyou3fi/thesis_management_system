@@ -6,7 +6,7 @@
         "course_title": "English Final Project",
         "professor_name": "Dr. Smith",
         "professor_id": 2,
-        "status": "pending",
+        "status": "scheduled",
         "request_date": "2025-08-17 16:22:15",
         "keyword": [
             "flan",
@@ -18,7 +18,10 @@
             "first_page": "first_page",
             "last_page": "last_page"
         },
-        "suggested_reviewer": "dr.rasooly"
+        "suggested_reviewer": "dr.rasooly",
+        "defense_date": "2025-10-01",
+        "internal_reviewer": "Dr. Hamed Mirzaei",
+        "external_reviewer": "Dr. Johnson"
     },
     {
         "student_id": 4,
