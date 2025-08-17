@@ -62,6 +62,7 @@ def submit_thesis_request(student) :
     print ("Thesis request submitted successfully ")
 
 def submit_defense_request(student):
+    print ("\n--- Submit Defense Request---")
     thesis_requests_file = os.path.join("data", "thesis_requests.json")
     defense_requests_file = os.path.join("data", "thesis_defense_requests.json")
 
@@ -100,6 +101,20 @@ def submit_defense_request(student):
             print ("Invalid selection")
             return
         
+        # اطلاعات دفاع 
+
+        # اطلاعات متنی
+        title = input ("Enter thesis title ")
+        keywords = input ("Enter thesis keyword (comma separated) ")
+        abstract_text = input ("Enter thesis abstract. ")
+
+        # فایل ها 
+        thesis_file = input ("Enter thesis PDF filename (inside file/) | (Please include the file format as well) ")
+        first_page_file = input ("Enter first page file (inside file/) | (Please include the file format as well) ")
+        last_page_file = input ("Enter last page file (inside file/) | (please include the file format as well) ")
+
+        # نام داور پیشنهادی 
+        suggested_reviewer = input ("Enter suggested reviewer name ")
 
         # ایجاد درخواست فاع 
         new_defense_request = {
@@ -111,7 +126,14 @@ def submit_defense_request(student):
         "professor_name":selected_thesis["professor_name"],
         "professor_id": selected_thesis["professor_id"],
         "status": "pending",
-        "request_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "request_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "keyword" : [kw.strip() for kw in keywords.split(",")],
+        "files" : {
+            "thesis":f"{thesis_file}",
+            "first_page": f"{first_page_file}",
+            "last_page": f"{last_page_file}",
+        },
+        "suggested_reviewer" : suggested_reviewer
     }
     
 
@@ -128,7 +150,7 @@ def view_request_status(student):
         return
     for i,status in enumerate(list_requests, start=1):
         print (f"{i}. course: {status['course_title']} - status: {status["status"]}")
-        
+    
 
 
 

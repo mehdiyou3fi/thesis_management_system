@@ -1,6 +1,9 @@
 import os
 from utils.data_manager import DataManager
 from datetime import datetime
+from utils.check_3month_passed import check_three_month_passed
+from utils.professor_utils import decrease_reviewer_capacity
+from utils.file_manager import open_file
 def review_thesis_requests(professor):
     request_file = os.path.join("data", "thesis_requests.json")
     course_file = os.path.join("data", "courses.json")
@@ -80,6 +83,96 @@ def review_thesis_requests(professor):
     DataManager.write_json(request_file, requests)
     DataManager.write_json(course_file, courses)
     DataManager.write_json(professor_file, professor_data)
+
+
+def view_defense_requests(professor):
+    defense_request_file = os.path.join("data", "thesis_defense_requests.json")
+    thesis_requests_file = os.path.join("data", "thesis_requests.json")
+    defense_requests = DataManager.read_json(defense_request_file)
+    thesis_requests = DataManager.read_json(thesis_requests_file)
+
+    if not defense_requests:
+        print ("no defense request found! ")
+        return 
+    
+    print ("\n---Defense Requests List---")
+    pending_requests = [r for r in defense_requests if r["professor_id"]==professor.id and r["status"]=="pending"]
+    for i,r in enumerate (pending_requests, start=1) :
+        print (f"{i}. studentn: {['student_name']} | course: {['course_title']} | date: {['request_date']}")
+        print ("File Submitted: ")
+        for f in r["files"]:
+            print (f"-{f}")
+
+
+
+    # انتخاب درخواست 
+    choice = input("Select request number to reviw (or 0 to exit): ")
+    try:
+        choice =int (choice) -1
+        if choice == -1:
+            return 
+        select_request =pending_requests[choice]
+    except (ValueError,IndexError):
+        print ("Invalid  Selection ")
+        return 
+    
+    # امکان باز کردن فایل 
+    while True:
+        view_choice = input("Do you want to open one of the files? yes(y) or no(n)")
+        if view_choice.lower() in ['y', 'yes']:
+            file_key = input ("file name : (thesis/first_page/last_page/abstact/forms)")
+            if file_key in select_request["files"]:
+                file_key_path = os.path.join ( "file", select_request["files"][file_key])
+                print (file_key_path)
+                open_file(file_key_path)
+            else:
+                print ("invalid file")
+        else:
+            break
+                
+    
+    # پیدا کردن تاریخ تایید شدن درخواست اخذ پایان نامه 
+    data_request = None
+    for tr in thesis_requests:
+        if  tr["student_id"] == select_request["student_id"] and tr["professor_id"] == select_request["professor_id"] and tr["course_id"]==select_request["course_id"] and tr["status"]=="approved":
+            data_request = tr["approval_date"]
+            break
+
+        if not data_request  :
+            print ("approval data not found ")
+            return 
+        
+    # بررسی گذشت سه ماه از درخواست اخذ پایان نامه 
+    if not check_three_month_passed(data_request):
+        print ("It hasn't been three months yet.")
+        return 
+    defense_date = input ("Enter defense date (yyyy-MM-DD)")
+    print (f"\nsuggested reviewer {select_request["suggested_reviewer"]} ")
+    internal_reviewer = input ("Enter internal reviewer: ")
+    
+    external_reviewer = input ("Enter external  reviewer ")
+
+    select_request["defense_date"] = defense_date
+    select_request["internal_reviewer"] = internal_reviewer
+    if not decrease_reviewer_capacity(internal_reviewer):
+        return 
+
+    select_request["external_reviewer"] = external_reviewer
+    # اگر داخل سیستم بود این قسمت هم اضافه میشه
+    select_request["status"] = "scheduled"
+
+    DataManager.write_json(defense_request_file, defense_requests)
+    print ("The thesis defense was successfully scheduled.")
+    return 
+
+        
+
+
+    
+
+
+
+
 
 
 

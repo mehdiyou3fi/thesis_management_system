@@ -2,21 +2,46 @@
     {
         "student_id": 4,
         "student_name": "mahdi",
-        "course_id": 1,
+        "course_id": 2,
         "course_title": "English Final Project",
         "professor_name": "Dr. Smith",
         "professor_id": 2,
         "status": "pending",
-        "request_date": "2025-08-15 02:15:44"
+        "request_date": "2025-08-17 16:22:15",
+        "keyword": [
+            "flan",
+            "flan2",
+            "flan3"
+        ],
+        "files": {
+            "thesis": "fake_thesis.pdf",
+            "first_page": "first_page",
+            "last_page": "last_page"
+        },
+        "suggested_reviewer": "dr.rasooly"
     },
     {
         "student_id": 4,
         "student_name": "mahdi",
-        "course_id": 1,
+        "course_id": 2,
         "course_title": "English Final Project",
         "professor_name": "Dr. Smith",
         "professor_id": 2,
-        "status": "pending",
-        "request_date": "2025-08-15 02:38:03"
+        "status": "scheduled",
+        "request_date": "2025-08-17 16:22:15",
+        "keyword": [
+            "flan",
+            "flan2",
+            "flan3"
+        ],
+        "files": {
+            "thesis": "fake_thesis.pdf",
+            "first_page": "first_page",
+            "last_page": "last_page"
+        },
+        "suggested_reviewer": "dr.aghaee",
+        "defense_date": "2025-09-01",
+        "internal_reviewer": "Dr. Johnson",
+        "external_reviewer": "Dr. Hamed Mirzaei"
     }
 ]
