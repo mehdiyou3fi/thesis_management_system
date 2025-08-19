@@ -9,8 +9,8 @@
             "Data Mining",
             "Machine Learning"
         ],
-        "guidance_capacity": 5,
-        "review_capacity": 9
+        "guidance_capacity": 4,
+        "review_capacity": 4
     },
     {
         "id": 2,
@@ -36,6 +36,6 @@
             "Machine Learning"
         ],
         "guidance_capacity": 0,
-        "review_capacity": 9
+        "review_capacity": 6
     }
 ]

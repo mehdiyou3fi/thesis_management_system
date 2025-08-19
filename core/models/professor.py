@@ -7,7 +7,6 @@ import os
 from utils.data_manager import DataManager
 from datetime import datetime
 from utils.check_3month_passed import check_three_month_passed
-from utils.professor_utils import decrease_reviewer_capacity
 from utils.file_manager import open_file
 
 class Professor(User):
@@ -84,6 +83,39 @@ class Professor(User):
         DataManager.write_json(professor_file, professor_data)
 
 
+    def decrease_reviewer_capacity(self, reviewer_type, reviewer_name):
+        if reviewer_type == "internal":
+            professors_file = os.path.join("data", "professor.json")
+            professors = DataManager.read_json(professors_file)
+
+            for p in professors:
+                if p["name"].strip().lower() == reviewer_name.strip().lower():
+                    if p["review_capacity"] > 0:
+                        p["review_capacity"] -= 1
+                        DataManager.write_json(professors_file, professors)
+                        return True
+                    else:
+                        print("Professor does not have capacity")
+                        return False
+            print ("professor not found!")
+            return False
+
+        elif reviewer_type == "external":
+            external_file = os.path.join("data", "external_reviewers.json")
+            external_reviewers = DataManager.read_json(external_file)
+
+            for p in external_reviewers:
+                if p["name"].strip().lower() == reviewer_name.strip().lower():
+                    if p["reviewer_capacity"] > 0:
+                        p["reviewer_capacity"] -= 1
+                        DataManager.write_json(external_file, external_reviewers)
+                        return True
+                    else:
+                        print("Reviewer does not have capacity")
+                        return False
+            print ("professor not found!")
+            return False
+
     def view_defense_requests(self):
         defense_request_file = os.path.join("data", "thesis_defense_requests.json")
         thesis_requests_file = os.path.join("data", "thesis_requests.json")
@@ -144,15 +176,17 @@ class Professor(User):
 
         defense_date = input("Enter defense date (yyyy-MM-DD): ")
         print(f"\nSuggested reviewer: {select_request['suggested_reviewer']}")
-        internal_reviewer = input("Enter internal reviewer: ")
-        external_reviewer = input("Enter external reviewer: ")
 
+        internal_reviewer = input("Enter internal reviewer: ")
         select_request["defense_date"] = defense_date
         select_request["internal_reviewer"] = internal_reviewer
-        if not decrease_reviewer_capacity(internal_reviewer):
+        if not self.decrease_reviewer_capacity("internal",internal_reviewer):
             return
 
+        external_reviewer = input("Enter external reviewer: ")
         select_request["external_reviewer"] = external_reviewer
+        if not self.decrease_reviewer_capacity("external", external_reviewer):
+            return
         select_request["status"] = "scheduled"
 
         DataManager.write_json(defense_request_file, defense_requests)
