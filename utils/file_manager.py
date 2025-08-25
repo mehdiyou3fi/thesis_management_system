@@ -1,6 +1,11 @@
 import os 
 import platform
 import subprocess
+from  utils.paths import ensure_dirs
+import sys
+
+def copy_file_safe():
+    pass
 
 
 def open_file(file_path):

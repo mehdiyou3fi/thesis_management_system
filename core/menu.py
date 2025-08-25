@@ -1,4 +1,5 @@
 from .student_action import *
+from core.models.student import Student
 # from .professor_action import review_thesis_requests
 # from .professor_action import view_defense_requests
 from core.models.professor import Professor
@@ -11,11 +12,12 @@ def student_menu(student):
         print ("4. Submit Thesis Defense Request ")
         print ("5. Search in Thesis Database ")
         print ("0. Exit")
-        choice = int(input("Please select "))
+        choice = int(input("Please select \n"))
         if choice == 0:
             break
         if choice == 1:
-            submit_thesis_request(student)
+            # submit_thesis_request(student)
+            Student.submit_thesis_request(student)
         if choice == 2:
             view_request_status(student)
         if choice == 4:

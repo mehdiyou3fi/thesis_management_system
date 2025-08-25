@@ -150,15 +150,3 @@ def view_request_status(student):
         return
     for i,status in enumerate(list_requests, start=1):
         print (f"{i}. course: {status['course_title']} - status: {status["status"]}")
-    
-
-
-
-        
-
-
-
-    
-
-
-        
