@@ -27,9 +27,15 @@ def copy_file_safe(src_path:str , dest_dir:str, dest_filename:str) -> str:
     # مسیر نرمال شده را پس میفرستیم
     return dst.replace("\\", "/")
     
-
-
-def open_file(file_path):
+# مسیر پوشه utils
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# مسیر ریشه پروژه
+PROJECT_DIR = os.path.dirname(BASE_DIR)
+def open_file(relative_path):
+     # مسیر مطلق بساز
+    file_path = os.path.join(PROJECT_DIR, relative_path)
+    # مطمئن شدن از مطلق بودن ان
+    file_path = os.path.abspath(file_path)  
     if os.path.exists(file_path):
         # wimdos
         if platform.system() == "Windows":
@@ -42,6 +48,4 @@ def open_file(file_path):
             subprocess.run(["xdg-open", file_path])
     else:
         print ("⚠️ File not found:", file_path)
-
-
 

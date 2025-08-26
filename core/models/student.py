@@ -32,10 +32,10 @@ class Student(User):
         for i, course in enumerate(courses, start=1):
             print(
                 f"{i}. {course['title']} | Professor Name: {course['professor']} "
-                f"| Professor Id {course['professor_id']} | Course Capacity : {course['capacity']}"
+                f"| Professor code {course['professor_code']} | Course Capacity : {course['capacity']}"
             )
             for j in professor:
-                if j["id"] == course["professor_id"]:
+                if j["username"] == course["professor_code"]:
                     print(f"professor capacity : {j['guidance_capacity']}")
 
         choice = input("select course number: ")
@@ -53,13 +53,13 @@ class Student(User):
             print("This course has no available capacity! ")
             return
         for k in professor:
-            if selected_course["professor_id"] == k["id"]:
+            if selected_course["professor_code"] == k["username"]:
                 if k["guidance_capacity"] <= 0:
                     print("This professor has no available capacity!")
                     return
         # در این قسمت در خواست ما ثبت میشود
         try:
-            thesis = Thesis(self.student_code, selected_course["id"], selected_course["title"])
+            thesis = Thesis(self.student_code, selected_course["id"], selected_course["title"], selected_course["professor_code"])
             thesis.save_request()
             print ("Thesis request submitted successfully.")
         except ValueError as e:
@@ -116,7 +116,7 @@ class Student(User):
         first_page_file = os.path.normpath(input("Enter first page path:  ").strip('"'))
         last_page_file = os.path.normpath(input("Enter last page path:  ").strip('"'))
 
-        thesis = Thesis(self.student_code, selected_thesis["course_ID"], selected_thesis["title"])
+        thesis = Thesis(self.student_code, selected_thesis["course_ID"], selected_thesis["title"],selected_thesis["professor_code"])
         try:
             thesis.upload_files(thesis_file, first_page_file, last_page_file)
             print ("The files have been registered.")
@@ -128,6 +128,7 @@ class Student(User):
         for t in items:
             if t["student_code"] == self.student_code and t["course_ID"] == selected_thesis["course_ID"]:
                 t["suggested_reviewer"] = suggested_reviewer
+                t["status"] = "defense_requested"
                 break
         Thesis._save_all(items) 
         print("Suggested reviewer has been added successfully.")

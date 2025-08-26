@@ -1,11 +1,9 @@
 from .student_action import *
 from core.models.student import Student
-# from .professor_action import review_thesis_requests
-# from .professor_action import view_defense_requests
 from core.models.professor import Professor
 def student_menu(student):
     while(True):
-        print ("\n---Student Menu")
+        print (f"\n---Student Menu --{student.name}--")
         print ("1. Thesis Submission Request: ")
         print ("2. View Request Status: ")
         print ("3. Resubmit Thesis Course Request ")
@@ -45,7 +43,7 @@ def advisor_menu(prof):
         print ("1. View, Review, and Approve Thesis Course Requests ")
         print ("2. Approval and Management of Submitted Defense Requests ")
         print ("0. Exit ")
-        choice = int(input("Please select "))
+        choice = int(input("\nPlease select "))
         if choice == 0:
             break
         if choice == 1:

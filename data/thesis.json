@@ -3,6 +3,7 @@
         "student_code": "arshi123",
         "course_ID": "1",
         "title": "English Final Project",
+        "professor_code": "smith002",
         "status": "approved",
         "request_date": "2025-08-26 01:26:42",
         "approval_date": "2025-03-26 01:26:42",
@@ -16,5 +17,28 @@
         "grades": {},
         "final_score": null,
         "suggested_reviewer": "dr.aghaee"
+    },
+    {
+        "student_code": "111",
+        "course_ID": "1",
+        "title": "English Final Project",
+        "professor_code": "smith002",
+        "status": "scheduled",
+        "request_date": "2025-08-26 22:14:36",
+        "approval_date": "2025-05-26 22:15:59",
+        "rejected_date": null,
+        "defense_date": "2025-09-01",
+        "files": {
+            "pdf": "file/thesis/111_1.pdf",
+            "img_first": "file/images/111_1_title.jpg",
+            "img_last": "file/images/111_1_last.jpg"
+        },
+        "judges": {
+            "internal_reviewer": "Dr. Johnson",
+            "external_reviewer": "dr.molaee"
+        },
+        "grades": {},
+        "final_score": null,
+        "suggested_reviewer": "dr.hamedtqr"
     }
 ]

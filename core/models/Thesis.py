@@ -5,13 +5,15 @@ from utils.validators import validate_defense_files
 from utils.paths import THESIS_JSON, DEFENDED_JSON, THESIS_PDF_DIR, IMAGES_DIR
 
 class Thesis:
-    def __init__(self, student_code, course_ID, title):
+    def __init__(self, student_code, course_ID, title, professor_code):
         self.student_code = str(student_code)
         self.course_ID = str(course_ID)
+        self.professor_code = professor_code
         self.title = title
         self.status = "pending"
         self.request_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.approval_date = None
+        self.rejected_date = None
         self.defense_date = None
         self.files = {}
         self.judges = {}
@@ -24,9 +26,11 @@ class Thesis:
                 "student_code": self.student_code,
                 "course_ID": self.course_ID,
                 "title": self.title,
+                "professor_code":self.professor_code, 
                 "status": self.status,
                 "request_date": self.request_date,
                 "approval_date": self.approval_date,
+                "rejected_date":self.rejected_date,
                 "defense_date": self.defense_date,
                 "files": self.files,
                 "judges": self.judges,
@@ -47,10 +51,12 @@ class Thesis:
     def _save_all(items):
         DataManager.write_json(THESIS_JSON, items)
 
+
+    @staticmethod
     def get(student_code, course_ID):
         sc, cid = str(student_code), str(course_ID)
         for t in Thesis._load_all():
-            if str(t["student_code"]) == sc and str(t["course_ID"]==cid):
+            if str(t["student_code"]) == sc and str(t["course_ID"])==cid:
                 return t
         return None
         
@@ -92,4 +98,29 @@ class Thesis:
                 break
         if not found:
             print ("Warning: Student record not found, files not saved in JSON.")
+        Thesis._save_all(items)
+
+
+    def mark_approved(self):
+        self.status = "approved"
+        self.approval_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        items = Thesis._load_all()
+        for t in items :
+            if t["student_code"] == self.student_code and t["course_ID"] == self.course_ID:
+                t["status"] = self.status 
+                t["approval_date"] = self.approval_date
+                t["rejected_date"] = None
+                break
+        Thesis._save_all(items)
+
+    def mark_rejected(self):
+        self.status = "rejected"
+        self.rejected_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        items = Thesis._load_all()
+        for t in items :
+            if t["student_code"] == self.student_code and t["course_ID"] == self.course_ID:
+                t["status"] = self.status 
+                t["approval_date"] = None
+                t["rejected_date"] = self.rejected_date
+                break
         Thesis._save_all(items)

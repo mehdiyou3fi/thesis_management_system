@@ -22,7 +22,7 @@
             "Data Mining",
             "Machine Learning"
         ],
-        "guidance_capacity": 3,
+        "guidance_capacity": 1,
         "review_capacity": 10
     },
     {
@@ -36,6 +36,6 @@
             "Machine Learning"
         ],
         "guidance_capacity": 0,
-        "review_capacity": 6
+        "review_capacity": 4
     }
 ]

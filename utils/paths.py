@@ -23,3 +23,6 @@ def ensure_dirs():
     os.makedirs(THESIS_PDF_DIR, exist_ok=True)
     os.makedirs(IMAGES_DIR, exist_ok=True)
 
+
+
+

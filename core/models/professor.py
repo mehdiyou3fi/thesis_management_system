@@ -2,27 +2,29 @@
 # class Professor(User):
 #     def __init__(self, id, name, username, password):
 #         super().__init__(id, name, username, password)
-from .user import User
 import os
-from utils.data_manager import DataManager
 from datetime import datetime
+from core.models.thesis import Thesis
+from .user import User
+from utils.data_manager import DataManager
 from utils.check_3month_passed import check_three_month_passed
 from utils.file_manager import open_file
 
 class Professor(User):
-    def __init__(self, id, name, username, password):
+    def __init__(self, id, name, username, password, professor_code = None, email= None ):
         super().__init__(id, name, username, password)
-
+        self.professor_code = professor_code or username
+        self.email = email
     def review_thesis_requests(self):
-        request_file = os.path.join("data", "thesis_requests.json")
+        # request_file = os.path.join("data", "thesis_requests.json")
         course_file = os.path.join("data", "courses.json")
         professor_file = os.path.join("data", "professor.json")
         professor_data = DataManager.read_json(professor_file)
-        requests = DataManager.read_json(request_file)
+        requests = Thesis._load_all()
         courses = DataManager.read_json(course_file)
         
         # فیلتر درخواست‌های منتظر برای این استاد
-        pending_requests = [r for r in requests if r["professor_id"]==self.id and r["status"]=="pending"]
+        pending_requests = [r for r in requests if r["professor_code"]==self.professor_code and r["status"]=="pending"]
         
         if not pending_requests:
             print("No pending request found!")
@@ -31,7 +33,7 @@ class Professor(User):
         print("\nPending thesis requests:")
         for i, req in enumerate(pending_requests, start=1):
             print(f"Date: {req['request_date']}")
-            print(f"{i}. Student: {req['student_name']} | Course: {req['course_title']}")
+            print(f"{i}. Student: {req['student_code']} | Course: {req['title']}")
             print("_"*30)
             print()
 
@@ -46,39 +48,42 @@ class Professor(User):
             return
 
         # پیدا کردن درس و استاد مربوطه
-        relate_course = next((c for c in courses if c['id'] == select_request["course_id"]), None)
-        relate_professor = next((p for p in professor_data if p["id"] == self.id), None)
+        # وقتی اولین رو ملاقات میکنه برمیگردونه و اگر نبود نان رو برمیگردونه اینطوری بهینه
+        relate_course = next((c for c in courses if c['id'] == select_request["course_ID"]), None)
+        relate_professor = next((p for p in professor_data if p["username"] == self.professor_code), None)
 
         # چک ظرفیت درس
         if relate_course and relate_course["capacity"] <= 0:
             print("No capacity left for this course! Cannot approve.")
-            select_request["status"] = "rejected"
-            select_request["rejection_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            Thesis.mark_rejected()
         # چک ظرفیت استاد
         elif relate_professor and relate_professor["guidance_capacity"] <= 0:
             print(f"No guidance capacity left for Professor {relate_professor['name']}! Cannot approve.")
-            select_request["status"] = "rejected"
-            select_request["rejection_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            Thesis.mark_rejected()
         else:
             decision = input("Approve (a) or Reject (r)? ").lower()
             if decision in ['a', 'approve']:
                 select_request["status"] = "approved"
+                select_request["rejected_date"] =None
                 select_request["approval_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 if relate_course:
                     relate_course["capacity"] -= 1
                 if relate_professor:
                     relate_professor["guidance_capacity"] -= 1
                 print("Request approved.")
+
             elif decision in ['r', 'reject']:
                 select_request["status"] = "rejected"
-                select_request["rejection_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                select_request["rejected_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                select_request["approval_date"] = None
                 print("Request rejected.")
             else:
                 print("Invalid choice!")
                 return
 
         # ذخیره تغییرات
-        DataManager.write_json(request_file, requests)
+        # DataManager.write_json(request_file, requests)
+        Thesis._save_all(requests)
         DataManager.write_json(course_file, courses)
         DataManager.write_json(professor_file, professor_data)
 
@@ -117,29 +122,34 @@ class Professor(User):
             return False
 
     def view_defense_requests(self):
-        defense_request_file = os.path.join("data", "thesis_defense_requests.json")
-        thesis_requests_file = os.path.join("data", "thesis_requests.json")
-        defense_requests = DataManager.read_json(defense_request_file)
-        thesis_requests = DataManager.read_json(thesis_requests_file)
+        # defense_request_file = os.path.join("data", "thesis_defense_requests.json")
+        # defense_requests = DataManager.read_json(defense_request_file)
+        thesis_requests = Thesis._load_all()
+        # چک کردن اینکه درخواستی برای دفاع امده یا ن
+        defense_requests = [
+    req for req in thesis_requests
+    if req["professor_code"] == self.professor_code and req["status"] == "defense_requested"
+]
 
+        
         if not defense_requests:
             print("No defense request found!")
             return
         
         print("\n---Defense Requests List---")
-        pending_requests = [r for r in defense_requests if r["professor_id"] == self.id and r["status"] == "pending"]
-        for i, r in enumerate(pending_requests, start=1):
-            print(f"{i}. student: {r['student_name']} | course: {r['course_title']} | date: {r['request_date']}")
+        # pending_requests = [r for r in defense_requests if r["professor_id"] == self.id and r["status"] == "pending"]
+        for i, r in enumerate(defense_requests, start=1):
+            print(f"{i}. student: {r['student_code']} | course: {r['title']} | approved_date: {r['approval_date']}")
             print("Files submitted:")
-            for f in r["files"]:
-                print(f"- {f}")
+            for key, path in r["files"].items():
+                print(f"- {key}: {path}")
 
         choice = input("Select request number to review (or 0 to exit): ")
         try:
             choice = int(choice) - 1
             if choice == -1:
                 return
-            select_request = pending_requests[choice]
+            select_request = defense_requests[choice]
         except (ValueError, IndexError):
             print("Invalid selection")
             return
@@ -148,9 +158,9 @@ class Professor(User):
         while True:
             view_choice = input("Do you want to open one of the files? yes(y) or no(n): ")
             if view_choice.lower() in ['y', 'yes']:
-                file_key = input("File name: (thesis/first_page/last_page/abstract/forms): ")
+                file_key = input("File name: (pdf/img_first/img_last/: ").lower()
                 if file_key in select_request["files"]:
-                    file_key_path = os.path.join("file", select_request["files"][file_key])
+                    file_key_path = select_request["files"][file_key]
                     print(file_key_path)
                     open_file(file_key_path)
                 else:
@@ -161,7 +171,7 @@ class Professor(User):
         # پیدا کردن تاریخ تایید درخواست پایان‌نامه
         data_request = None
         for tr in thesis_requests:
-            if tr["student_id"] == select_request["student_id"] and tr["professor_id"] == select_request["professor_id"] and tr["course_id"] == select_request["course_id"] and tr["status"] == "approved":
+            if tr["student_code"] == select_request["student_code"] and tr["professor_code"] == select_request["professor_code"] and tr["course_ID"] == select_request["course_ID"] and tr["status"] == "defense_requested":
                 data_request = tr["approval_date"]
                 break
 
@@ -173,21 +183,28 @@ class Professor(User):
         if not check_three_month_passed(data_request):
             print("It hasn't been three months yet.")
             return
-
+        # گرفتن تاریخ دفاع از پرفسور
         defense_date = input("Enter defense date (yyyy-MM-DD): ")
-        print(f"\nSuggested reviewer: {select_request['suggested_reviewer']}")
+        print(f"\nSuggested reviewer: {select_request.get('suggested_reviewer', 'N/A')}")
 
-        internal_reviewer = input("Enter internal reviewer: ")
+        # گرفتن داور داخلی 
+        internal_reviewer = input("Enter (name) of internal reviewer: ")
         select_request["defense_date"] = defense_date
-        select_request["internal_reviewer"] = internal_reviewer
+        select_request["judges"]["internal_reviewer"] = internal_reviewer
         if not self.decrease_reviewer_capacity("internal",internal_reviewer):
             return
-
-        external_reviewer = input("Enter external reviewer: ")
-        select_request["external_reviewer"] = external_reviewer
+        # گرفتن داور خارجی
+        external_reviewer = input("Enter (name) of external reviewer: ")
+        select_request["judges"]["external_reviewer"] = external_reviewer
         if not self.decrease_reviewer_capacity("external", external_reviewer):
             return
+        
+        # تغییر وضعیت 
         select_request["status"] = "scheduled"
 
-        DataManager.write_json(defense_request_file, defense_requests)
+        # DataManager.write_json(defense_request_file, defense_requests)
+        Thesis._save_all(thesis_requests)
         print("The thesis defense was successfully scheduled.")
+
+
+ 
