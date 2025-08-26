@@ -31,15 +31,5 @@
         "professor_id": 3,
         "status": "approved",
         "approval_date": "2025-08-15 01:23:41"
-    },
-    {
-        "request_date": "2025-08-25 16:16:08",
-        "student_id": 3,
-        "student_name": "arshi",
-        "course_id": 1,
-        "course_title": "English Final Project",
-        "professor_name": "Dr. Smith",
-        "professor_id": 2,
-        "status": "pending"
     }
 ]

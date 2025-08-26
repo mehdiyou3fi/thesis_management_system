@@ -19,9 +19,9 @@ def student_menu(student):
             # submit_thesis_request(student)
             Student.submit_thesis_request(student)
         if choice == 2:
-            view_request_status(student)
+            Student.view_request_status(student)
         if choice == 4:
-            submit_defense_request(student)
+            Student.submit_defense_request(student)
             
 
 

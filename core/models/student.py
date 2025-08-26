@@ -2,20 +2,27 @@ import os
 from datetime import datetime, timedelta
 from utils.data_manager import DataManager
 from .user import User
+from core.models.thesis import Thesis
+from utils.paths import THESIS_JSON
+from utils.check_3month_passed import check_three_month_passed
 
 
 class Student(User):
-    def __init__(self, id, name, username, password):
+    def __init__(self, id, name, username, password, student_code=None, email=None):
         super().__init__(id, name, username, password)
+        self.student_code = student_code or username
+        self.email = email
+    
 
     def submit_thesis_request(self):
+        '''در خواست برای اخذ پایان نامه '''
         professor_file = os.path.join("data", "professor.json")
         courses_file = os.path.join("data", "courses.json")
-        request_file = os.path.join("data", "thesis_requests.json")
+        
 
         professor = DataManager.read_json(professor_file)
         courses = DataManager.read_json(courses_file)
-        request = DataManager.read_json(request_file)
+        
 
         if not courses:
             print("No courses found! ")
@@ -39,11 +46,7 @@ class Student(User):
             print("invalid selection! ")
             return
 
-        # چک برای اینکه دوبار درخواست یک درس را نده 
-        for req in request:
-            if req["student_id"] == self.id and req["course_id"] == selected_course["id"]:
-                print("You have already submitted a request for this course!")
-                return
+
 
         # چک ظرفیت درس  
         if selected_course["capacity"] <= 0:
@@ -54,53 +57,46 @@ class Student(User):
                 if k["guidance_capacity"] <= 0:
                     print("This professor has no available capacity!")
                     return
+        # در این قسمت در خواست ما ثبت میشود
+        try:
+            thesis = Thesis(self.student_code, selected_course["id"], selected_course["title"])
+            thesis.save_request()
+            print ("Thesis request submitted successfully.")
+        except ValueError as e:
+            print ("Error", e)
 
-        # ساخت درخواست 
-        new_request = {
-            "request_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "student_id": self.id,
-            "student_name": self.name,
-            "course_id": selected_course["id"],
-            "course_title": selected_course["title"],
-            "professor_name": selected_course["professor"],
-            "professor_id": selected_course["professor_id"],
-            "status": "pending"
-        }
 
-        # ذخیره در فایل درخواست ها
-        DataManager.append_json(request_file, new_request)
 
-        print("Thesis request submitted successfully ")
 
     def submit_defense_request(self):
         print("\n--- Submit Defense Request---")
-        thesis_requests_file = os.path.join("data", "thesis_requests.json")
         defense_requests_file = os.path.join("data", "thesis_defense_requests.json")
 
-        thesis_requests = DataManager.read_json(thesis_requests_file)
+        thesis_requests = Thesis._load_all()
 
         # پیدا کردن دانشجو و درخواست‌های تایید شده‌اش
-        approved_theses = [t for t in thesis_requests if t["student_id"] == self.id and t["status"] == "approved"]
+        approved_theses = [t for t in thesis_requests if t["student_code"] == self.student_code and t["status"] == "approved"]
 
         if not approved_theses:
             print("you have no approved thesis to defend")
             return
 
         # چک گذشتن سه ماه از درخواست پایان نامه 
-        now_date = datetime.now()
+        # now_date = datetime.now()
         eligible_theses = []
-        for thesis in approved_theses:
-            approval_date = datetime.strptime(thesis["approval_date"], "%Y-%m-%d %H:%M:%S")
-            if now_date - approval_date >= timedelta(days=90):
-                eligible_theses.append(thesis)
+        for t in approved_theses:
+            # approval_date = datetime.strptime(t["approval_date"], "%Y-%m-%d %H:%M:%S")
+            approval_date = t["approval_date"]
+            if check_three_month_passed(approval_date):
+                eligible_theses.append(t)
 
         if not eligible_theses:
             print("You must wait at least 3 months after approval before defending ")
             return
 
         # نمایش پایان‌نامه‌های قابل دفاع
-        for i, thesis in enumerate(eligible_theses, start=1):
-            print(f"{i}. {thesis['course_title']}  Approved on : {thesis['approval_date']}")
+        for i, t in enumerate(eligible_theses, start=1):
+            print(f"{i}. {t['title']}  Approved on : {t['approval_date']}")
 
         choice = input("Select thesis to request defense: ")
 
@@ -112,46 +108,43 @@ class Student(User):
             return
 
         # اطلاعات دفاع 
-        title = input("Enter thesis title: ")
-        keywords = input("Enter thesis keywords (comma separated): ")
-        abstract_text = input("Enter thesis abstract: ")
+        # title = input("Enter thesis title: ")
+        # keywords = input("Enter thesis keywords (comma separated): ")
+        # abstract_text = input("Enter thesis abstract: ")
 
-        thesis_file = input("Enter thesis PDF filename (inside file/) | (Please include the file format as well): ")
-        first_page_file = input("Enter first page file (inside file/) | (Please include the file format as well): ")
-        last_page_file = input("Enter last page file (inside file/) | (Please include the file format as well): ")
+        thesis_file = os.path.normpath(input("Enter thesis PDF path:  ").strip('"'))
+        first_page_file = os.path.normpath(input("Enter first page path:  ").strip('"'))
+        last_page_file = os.path.normpath(input("Enter last page path:  ").strip('"'))
+
+        thesis = Thesis(self.student_code, selected_thesis["course_ID"], selected_thesis["title"])
+        try:
+            thesis.upload_files(thesis_file, first_page_file, last_page_file)
+            print ("The files have been registered.")
+        except ValueError as e:
+            print ("ERROR", e)
 
         suggested_reviewer = input("Enter suggested reviewer name: ")
+        items = Thesis._load_all()
+        for t in items:
+            if t["student_code"] == self.student_code and t["course_ID"] == selected_thesis["course_ID"]:
+                t["suggested_reviewer"] = suggested_reviewer
+                break
+        Thesis._save_all(items) 
+        print("Suggested reviewer has been added successfully.")
+        print("Defense request submitted successfully and all files have been registered.")
 
-        new_defense_request = {
-            "student_id": self.id,
-            "student_name": self.name,
-            "course_id": selected_thesis["course_id"],
-            "course_title": selected_thesis["course_title"],
-            "professor_name": selected_thesis["professor_name"],
-            "professor_id": selected_thesis["professor_id"],
-            "status": "pending",
-            "request_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "keyword": [kw.strip() for kw in keywords.split(",")],
-            "files": {
-                "thesis": f"{thesis_file}",
-                "first_page": f"{first_page_file}",
-                "last_page": f"{last_page_file}",
-            },
-            "suggested_reviewer": suggested_reviewer
-        }
 
-        # ثبت 
-        DataManager.append_json(defense_requests_file, new_defense_request)
-        print("Defense request submitted successfully!")
+        
 
     def view_request_status(self):
-        thesis_requests_file = os.path.join("data", "thesis_requests.json")
-        thesis_requests = DataManager.read_json(thesis_requests_file)
-        list_requests = [t for t in thesis_requests if t["student_id"] == self.id]
+        thesis = Thesis._load_all()
+        
+
+        list_requests = [t for t in thesis if t["student_code"] == self.student_code]
 
         if not list_requests:
             print("No request has been registered for you.")
             return
 
         for i, status in enumerate(list_requests, start=1):
-            print(f"{i}. course: {status['course_title']} - status: {status['status']}")
+            print(f"{i}. course: {status['title']} - status: {status['status']}")

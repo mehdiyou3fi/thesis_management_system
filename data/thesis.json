@@ -1,0 +1,20 @@
+[
+    {
+        "student_code": "arshi123",
+        "course_ID": "1",
+        "title": "English Final Project",
+        "status": "approved",
+        "request_date": "2025-08-26 01:26:42",
+        "approval_date": "2025-03-26 01:26:42",
+        "defense_date": null,
+        "files": {
+            "pdf": "file/thesis/arshi123_1.pdf",
+            "img_first": "file/images/arshi123_1_title.jpg",
+            "img_last": "file/images/arshi123_1_last.jpg"
+        },
+        "judges": {},
+        "grades": {},
+        "final_score": null,
+        "suggested_reviewer": "dr.aghaee"
+    }
+]
