@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from utils.data_manager import DataManager
 from utils.file_manager import copy_file_safe
 from utils.validators import validate_defense_files
@@ -124,3 +125,108 @@ class Thesis:
                 t["rejected_date"] = self.rejected_date
                 break
         Thesis._save_all(items)
+
+
+    @staticmethod
+    def auto_update_status_all():
+        """
+        بررسی تمام پایان‌نامه‌ها و آپدیت وضعیت:
+        اگر تاریخ دفاع گذشته و وضعیت 'scheduled' است،
+        آن را به 'defended' تغییر می‌دهد.
+        """
+        items = Thesis._load_all()
+        now = datetime.now()
+        updated = False
+
+        for t in items:
+            defense_date_str = t.get("defense_date")
+            status = t.get("status")
+
+            if defense_date_str and status == "scheduled":
+                try:
+                    defense_dt = datetime.strptime(defense_date_str, "%Y-%m-%d")
+                    if defense_dt <= now:
+                        t["status"] = "defended"
+                        updated = True
+                        print(f"✅ Thesis for {t['student_code']} - {t['course_ID']} updated to 'defended'.")
+                except ValueError:
+                    print(f"⚠️ Invalid date format for {t['student_code']} - {t['course_ID']}: {defense_date_str}")
+
+        if updated:
+            Thesis._save_all(items)
+
+    @staticmethod
+    def auto_result(grade:float)->str :
+        if grade >= 17:
+            return "A"
+        elif grade >=13:
+            return "B"
+        elif grade >= 10:
+            return "C"
+        else:
+            return "D"
+
+
+    def submit_grade(self, judge_role, grade):
+        """
+        ثبت نمره توسط داور داخلی یا خارجی
+        -----------------------------------
+        judge_role: "internal" | "external"
+        grade: نمره عددی (float)
+        """
+        
+        # نعیین نتیجه بر اساس نمره 
+        result =  Thesis.auto_result(float(grade))
+
+        # بارگزاری پایان نامه
+        items = Thesis._load_all()
+
+        for t in items :
+            if t["student_code"] == self.student_code and t["course_ID"] == self.course_ID and t["status"]== "defended":
+                found = True
+                # دخیره نمره و نتیجه برای داور مربوطه 
+                grades = t.get("grades", {}) 
+                grades[judge_role] = {
+                    "grade": float(f"{grade:.2f}"),
+                    "result" : result
+                }
+                t["grades"] = grades
+                print ("ggrade added")
+                # اگر هر دو داور نمره دادند نمره نهایی ثبت بشه 
+                if "internal" in grades and "external" in grades :
+                    g1 = Decimal(str(grades["internal"]["grade"]))
+                    g2 = Decimal(str(grades["external"]["grade"]))
+
+                    # محسابه نهایی
+                    final = (g1 + g2) / Decimal("2")
+                    final_score = float(f"{final:.2f}")
+                    final_result = Thesis.auto_result(float(final_score))
+
+                    # ثبت نمره ها 
+                    t["final_score"] = final_score
+                    t["final_result"] = final_result
+                    t["status"]= "defended"
+
+                    defended = DataManager.read_json(DEFENDED_JSON)
+                    defended.append(t)
+                    DataManager.write_json(DEFENDED_JSON, defended)
+
+
+                    # حذف دفاع از تز ها چ.ن دفاع شد 
+                    items = [x for x in items
+                              if not (
+                                  x["student_code"]== self.student_code and 
+                                  x["course_ID"]== self.course_ID
+                              )
+                    ]
+                break
+        if not found :
+            print(f"❌ Defended Thesis for student_code={self.student_code}, course_ID={self.course_ID} not found!")
+        Thesis._save_all(items)
+
+
+
+        
+        
+
+

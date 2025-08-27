@@ -2,13 +2,29 @@
     {
         "id": 1,
         "name": "dr.ahmadi",
+        "username": "123456",
+        "password": "000",
         "field": "Computer Science",
-        "reviewer_capacity": 10
+        "reviewer_capacity": 9
     },
     {
         "id": 2,
         "name": "dr.molaee",
+        "username": "0147",
+        "password": "0258",
         "field": "Computer Science",
         "reviewer_capacity": 6
+    },
+    {
+        "id": 3,
+        "name": "Dr. asghari",
+        "username": "ahmadi002",
+        "password": "...",
+        "fields": [
+            "Artificial Intelligence",
+            "Data Mining",
+            "Machine Learning"
+        ],
+        "review_capacity": 4
     }
 ]

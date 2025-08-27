@@ -11,7 +11,7 @@ IMAGES_DIR =os.path.join(FILES_DIR, "images")
 
 # فایل های داده 
 STUDENT_JSON = os.path.join(DATA_DIR,"student.json")
-TEACHERS_JSON = os.path.join(DATA_DIR, "professor.json")   # قبلاً professor.json
+PROFESSOR_JSON = os.path.join(DATA_DIR, "professor.json")   # قبلاً professor.json
 COURSES_JSON = os.path.join(DATA_DIR, "courses.json")
 THESIS_JSON = os.path.join(DATA_DIR, "thesis.json")       # ادغام thesis_requests/...
 DEFENDED_JSON = os.path.join(DATA_DIR, "defended_thesis.json")

@@ -5,6 +5,7 @@ from .user import User
 from core.models.thesis import Thesis
 from utils.paths import THESIS_JSON
 from utils.check_3month_passed import check_three_month_passed
+from utils.paths import DEFENDED_JSON
 
 
 class Student(User):
@@ -149,3 +150,25 @@ class Student(User):
 
         for i, status in enumerate(list_requests, start=1):
             print(f"{i}. course: {status['title']} - status: {status['status']}")
+
+    def view_defense_result(self):
+        defended_thesis=DataManager.read_json(DEFENDED_JSON)
+        list_defended = [d for d in defended_thesis if d["student_code"] == self.student_code]
+
+        if not list_defended:
+            print("No defended thesis  has been registered for you.")
+            return
+        for i , info in enumerate(list_defended, start = 1):
+            print ("-"*30)
+            print (f"{i}. course: {info["title"]} | status {info["status"]}")
+            print (f"reviewer (internal) : {info["judges"]["internal_reviewer"]} || grade {info["grades"]["internal"]["grade"]}")
+            print (f"reviewer (external) : {info["judges"]["external_reviewer"]} || grade {info["grades"]["external"]["grade"]}")
+            print (f"final score {info["final_score"]} || result {info["final_result"]}")
+            print ("final file: ")
+            print (f"PDF: {info["files"]["pdf"]}")
+            print (f"first page image: {info["files"]["img_first"]}")
+            print (f"last page image: {info["files"]["img_last"]}")
+            print ("-" * 30)
+            
+
+

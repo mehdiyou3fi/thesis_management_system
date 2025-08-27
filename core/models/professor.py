@@ -207,4 +207,36 @@ class Professor(User):
         print("The thesis defense was successfully scheduled.")
 
 
- 
+    def grade_thesis_as_internal(self):
+        """ثبت نمره  پایان نامه توسط داور داخلی
+        --------------------------------------------
+        کاربر باید :
+        -student_code
+        -course_ID
+        -grade(flaot)
+        را وارد کند 
+        """
+
+        # دریاغت اطلاعات کاربر 
+        student_code = input("Enter student_code: ")
+        course_ID = input("Enter course_ID: ")
+        grade = float(input("Enter grade: "))
+
+        # بررسی وجود پایان نامه 
+        thesis_data = Thesis.get(student_code, course_ID)
+        if not thesis_data:
+            print ("Thesis not found :")
+            return 
+        
+        # ساخت ابچکتاز داده های پیدا شده 
+        thesis =Thesis(
+            student_code = thesis_data["student_code"],
+            course_ID = thesis_data["course_ID"],
+            title = thesis_data["title"],
+            professor_code= self.professor_code
+        )
+
+        # ثبت نمره داور داخلی 
+        thesis.submit_grade("internal", grade)
+
+        print ("Internal grade submitted. ")

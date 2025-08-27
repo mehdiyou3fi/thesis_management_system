@@ -21,7 +21,7 @@
         "professor_code": "johnson002",
         "year": 1404,
         "semester": "Second Semester",
-        "capacity": 0,
+        "capacity": 1,
         "resources": [
             "Advanced English Textbook",
             "Essay Writing Techniques"

@@ -2,6 +2,8 @@ import os
 from utils.data_manager import DataManager
 from core.models.student import Student
 from core.models.professor import Professor
+from core.models.externsl_reviewer import ExternalReviewer
+from utils.paths import THESIS_JSON, DEFENDED_JSON, THESIS_PDF_DIR, IMAGES_DIR,EXTERNAL_REVIEWERS_JSON
 
 class Authentication():
     @staticmethod
@@ -19,4 +21,12 @@ class Authentication():
         for p  in DataManager.read_json(professor_file):
             if p["username"] == username and p["password"] == password:
                 return Professor(p["id"],p["name"], p["username"], p["password"])
+        return None 
+    
+    @staticmethod
+    def external_reviewer(username, password):
+        external_file= os.path.join(EXTERNAL_REVIEWERS_JSON)
+        for e in DataManager.read_json(external_file):
+            if e["username"] == username and e["password"] == password:
+                return ExternalReviewer(e["id"], e["name"], e["username"], e["password"])
         return None 

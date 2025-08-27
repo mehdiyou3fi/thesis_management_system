@@ -1,0 +1,68 @@
+[
+    {
+        "student_code": "111",
+        "course_ID": "1",
+        "title": "English Final Project",
+        "professor_code": "smith002",
+        "status": "defended",
+        "request_date": "2025-08-26 22:14:36",
+        "approval_date": "2025-05-26 22:15:59",
+        "rejected_date": null,
+        "defense_date": "2025-08-27",
+        "files": {
+            "pdf": "file/thesis/111_1.pdf",
+            "img_first": "file/images/111_1_title.jpg",
+            "img_last": "file/images/111_1_last.jpg"
+        },
+        "judges": {
+            "internal_reviewer": "Dr. Johnson",
+            "external_reviewer": "dr.molaee"
+        },
+        "grades": {
+            "internal": {
+                "grade": 17.75,
+                "result": "A"
+            },
+            "external": {
+                "grade": 18.76,
+                "result": "A"
+            }
+        },
+        "final_score": 18.26,
+        "suggested_reviewer": "dr.hamedtqr",
+        "final_result": "A"
+    },
+    {
+        "student_code": "mahdi2005",
+        "course_ID": "2",
+        "title": "Advanced English Project",
+        "professor_code": "johnson002",
+        "status": "defended",
+        "request_date": "2025-08-28 00:08:25",
+        "approval_date": "2025-05-28 00:08:54",
+        "rejected_date": null,
+        "defense_date": "2025-08-27",
+        "files": {
+            "pdf": "file/thesis/mahdi2005_2.pdf",
+            "img_first": "file/images/mahdi2005_2_title.jpg",
+            "img_last": "file/images/mahdi2005_2_last.jpg"
+        },
+        "judges": {
+            "internal_reviewer": "Dr. Smith",
+            "external_reviewer": "dr.ahmadi"
+        },
+        "grades": {
+            "internal": {
+                "grade": 18.89,
+                "result": "A"
+            },
+            "external": {
+                "grade": 19.97,
+                "result": "A"
+            }
+        },
+        "final_score": 19.43,
+        "suggested_reviewer": "dr.labooboo",
+        "final_result": "A"
+    }
+]
