@@ -1,4 +1,3 @@
-from .student_action import *
 from core.models.student import Student
 from core.models.professor import Professor
 from core.models.externsl_reviewer import ExternalReviewer
