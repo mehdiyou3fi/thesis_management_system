@@ -5,7 +5,7 @@
         "professor": "Dr. Smith",
         "professor_code": "smith002",
         "year": 1404,
-        "semester": "First Semester",
+        "semester": "First",
         "capacity": 2,
         "resources": [
             "English Grammar Book",
@@ -20,7 +20,7 @@
         "professor": "Dr. Johnson",
         "professor_code": "johnson002",
         "year": 1404,
-        "semester": "Second Semester",
+        "semester": "Second",
         "capacity": 1,
         "resources": [
             "Advanced English Textbook",
@@ -28,5 +28,21 @@
         ],
         "sessions": 12,
         "units": 2
+    },
+    {
+        "id": "5",
+        "title": "Introduction to Computer Science",
+        "professor": "Dr. Smith",
+        "professor_code": "smith002",
+        "year": "2025",
+        "semester": "first",
+        "capacity": 15,
+        "resources": [
+            "book1.pdf",
+            "book2.pdf",
+            "slides"
+        ],
+        "sessions": 15,
+        "unit": 3
     }
 ]

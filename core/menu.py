@@ -45,7 +45,8 @@ def advisor_menu(prof):
     while(True):
         print ("1. View, Review, and Approve Thesis Course Requests ")
         print ("2. Approval and Management of Submitted Defense Requests ")
-        print ("3. Search in Thesis Database ")
+        print ("3. Add a new course ")
+        print ("4. Search in Thesis Database ")
         print ("0. Exit ")
         choice = int(input("\nPlease select "))
         if choice == 0:
@@ -55,6 +56,8 @@ def advisor_menu(prof):
         if choice == 2:
             Professor.view_defense_requests(prof)
         if choice == 3:
+            Professor.add_course(prof)
+        if choice == 4:
             Professor.search_defended_thesis()
 
 

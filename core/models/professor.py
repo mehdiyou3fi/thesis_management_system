@@ -9,6 +9,7 @@ from .user import User
 from utils.data_manager import DataManager
 from utils.check_3month_passed import check_three_month_passed
 from utils.file_manager import open_file
+from utils.paths import COURSES_JSON
 
 class Professor(User):
     def __init__(self, id, name, username, password, professor_code = None, email= None ):
@@ -240,3 +241,38 @@ class Professor(User):
         thesis.submit_grade("internal", grade)
 
         print ("Internal grade submitted. ")
+    
+    def add_course(self):
+        '''اضافه کردن یک درس جدید توسط استاد '''
+        courses = DataManager.read_json(COURSES_JSON)
+        print ("\n Add New Course")
+        course_id = input ("Enter course_id").strip()
+        # جلوگیری از تکرار 
+        if any(c["id"] == course_id for c in courses):
+            print ("This course ID already exist")
+            return 
+        course_title = input("Enter Course title : ").strip()
+        year = input("Enter Year (e.g., 2025): ").strip()
+        semester = input("Enter Semester (first/second): ").strip()
+        capacity = int(input("Enter Capacity: ").strip())
+        resources = input("Enter Resources (comma separated): ").strip().split(",")
+        sessions = int(input("Enter Number of Sessions: ").strip())
+        unit = int(input("Enter Unit count: ").strip())
+
+        # ساخت دیکشنری جدید برای درس جدید 
+        new_course = {
+            "id":course_id,
+            "title":course_title,
+            "professor":self.name,
+            "professor_code":self.username,
+            "year":year,
+            "semester":semester,
+            "capacity":capacity,
+            "resources":resources,
+            "sessions":sessions,
+            "unit":unit
+        }
+
+        DataManager.append_json(COURSES_JSON, new_course)
+        print("✅ New course added successfully!")
+        
